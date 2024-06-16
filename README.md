@@ -1,0 +1,2 @@
+# Student-Report-Card-Generator-in-C-Semester-Project-
+This semester project focuses on developing a Student Report Card Generator using C++. The primary objective of this project is to create a comprehensive and efficient system for managing and generating report cards for students. This project aims to streamline the process of recording, calculating, and displaying student grades and performance.
