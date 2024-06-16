@@ -1,0 +1,740 @@
+#include <iostream>
+#include <fstream>
+#include<string>
+#include <cstring>
+#include <windows.h>
+#include <iomanip>
+#include <stdlib.h>
+
+using namespace std;
+
+// Global variables
+char gap[2] = { '|','\0' }, ch;
+int i, j, l, y, z, n;        // variables used as counters and for conditons
+string x, p;
+
+class admin {   // A class defined admin
+private:
+	char stname[60], dob[11], fname[60], uni[150], roll[12], percent[7];   //class variables
+	int LCA, Diff, CM, PSYC, Prog;
+
+public:
+	// Functions of class defined here to get input and output student data
+	void adminctrl();
+	void datainput();
+	void readfile(int);
+	void datapattern();
+	void showdata();
+	void printdata();
+	void search();
+	void edittab();
+	void editdata();
+	void tempfile();
+	void deletestudentdata();
+	void deletefile();
+	void printtable(short x, short y) {  // windows.h function to print table by using cursour location
+		COORD pos = { x,y };
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	}
+};
+
+int main() {                 // main function starts here
+
+	system("Color 80");
+	admin a;                             // Class object created
+	do { 
+		Beep(600, 300);
+		cout << "\n\n\n\t\t\t\t ============== Institute of Space Technology Islamabad ============== \n\n";
+		cout << "\t\t\t\t ============== Student Report Card C++ Project IT Lab ============== \n\n\n";
+		cout << "\n\n\t\t\t1: Login as Admin";
+		cout << "\n\n\t\t\t2: Login as Student";
+		cout << "\n\n\t\t\t3: Exit";
+		cout << "\n\n\t\t\tEnter option:  ";
+		cin >> ch;          // option input from user
+		switch (ch) {
+			case '1':
+				do {
+					system("cls");
+					Beep(600, 300);
+					cout << "\n\n\t\t\tTo go back type (exit)\n\t\t\tEnter Password: ";
+					cin >> p;               // if password correct 
+					if (p == "admin") {
+						a.adminctrl();      // function called
+					}
+					else if (p == "exit") { break; } // to exit if user does not know password
+					else {
+						Beep(600, 300);
+						cout << "\n\n\t\t\tInvalid input...\n\n\t\t\t";
+						system("pause");
+					}
+				} while (ch == '1');
+				break;
+
+			case '2':
+				a.search();      // class search function called
+				break;
+
+			case '3':
+				exit(0);    // to exit program
+				break;
+
+			default:
+				cout << "\n\n\t\t\tInvalid input...\n\n\t\t\t";
+				system("pause");
+		}
+		system("cls");
+
+	} while (1);
+
+	return 0;	
+}
+
+void admin::adminctrl() {          // function to show all the options to admin
+
+		do {
+			system("cls");
+			Beep(600, 300);
+			cout << "\n\n\t\t" << setfill('-') << setw(100) << "\n";
+			cout << "\t\t\t\t\t\t\t   Main Menu\n";
+			cout << "\t\t" << setfill('-') << setw(100) << "\n";
+			cout << "\n\n\t\t\t\t1:   Enter Data";
+			cout << "\n\n\t\t\t\t2:   Print All Data";
+			cout << "\n\n\t\t\t\t3:   Search Data";
+			cout << "\n\n\t\t\t\t4:   Edit Data";
+			cout << "\n\n\t\t\t\t5:   Go to main menu";
+			cout << "\n\n\t\t\t\t\tEnter option: ";
+			cin >> ch;
+
+			switch (ch) {
+				case '1':
+					datainput();         // function called for dataiput
+					break;
+
+				case '2':
+					printdata();         // function called to see all data
+					break;
+
+				case '3':
+					search();            // function to search a students data called
+					break;
+
+				case '4':
+					edittab();           // called to edit or delete data
+					break;
+
+				case '5':
+					break;
+
+				default:
+					cout << "\n\n\t\t\tinvalid option!!!\n\t\t\t";
+					system("pause");
+					system("cls");
+			}
+		} while (ch != '5');
+}
+
+void admin::datainput() {             // input from user taken here
+
+	do {
+		fstream data("data.txt", ios::out | ios::app);
+		system("cls");
+		Beep(600, 300);
+
+		cout << "\n" << setfill('-') << setw(120) << "\n\n";
+		cout << "\t\t\tEnter Student Name:\n\t\t\t\t";
+		cin.ignore();
+		cin.getline(stname, 60);
+
+		cout << "\t\t\tEnter Student's Roll no:\n\t\t\t\t";
+		cin.getline(roll, 12);
+		cout << "\t\t\tEnter Student's Father Name:\n\t\t\t\t";
+		cin.getline(fname, 60);
+		cout << "\t\t\tEnter Student Date of Birth (dd-mm-yyyy):\n\t\t\t\t";
+		cin.getline(dob, 11);
+		cout << "\t\t\tEnter UNI Name:\n\t\t\t\t";
+		cin.getline(uni, 150);
+		cout << "\n" << setfill('-') << setw(120) << "\n\n";
+		cout << "\t\tEnter obtained marks of student in LCA out of 100:  ";
+		cin >> LCA;
+		cout << "\n\t\tEnter obtained marks of student in Differential out of 100:  ";
+		cin >> Diff;
+		cout << "\n\t\tEnter obtained marks of student in Communication Skills out of 100:  ";
+		cin >> CM;
+		cout << "\n\t\tEnter obtained marks of student in Psychology out of 100:  ";
+		cin >> PSYC;
+		cout << "\n\t\tEnter obtained marks of student in Programmning out of 100:  ";
+		cin >> Prog;
+		cout << "\n" << setfill('-') << setw(120) << "\n\n";
+
+		// All the input data is stored into file here
+
+		data << stname << gap << roll << gap << fname << gap;
+		data << dob << gap << uni << gap << LCA << gap;
+		data << Diff << gap << CM << gap << PSYC << gap;
+		data << Prog << gap << (((LCA + Diff + CM + PSYC + Prog) / 500.0) * 100) << "%" << gap << endl;
+		data.close();
+		system("pause");
+
+		do {                       // do while use to ask user if he wants to enter more data
+			system("cls");
+			Beep(600, 300);
+			cout << "\n\n\t\t\t\tDo you want to enter more data? enter y/n....... :   ";
+			cin >> ch;
+			if (ch != 'n' && ch != 'y') {
+				Beep(600, 300);
+				cout << "\ninvalid input!!!";
+			}
+			data.close();
+
+		} while (ch != 'n' && ch != 'y');
+		cout << endl;
+
+	} while (ch != 'n' && ch == 'y');
+
+	Beep(600, 300);
+	cout << "\t\t\t\tdata added to file!!\n\n\n\t\t\t\t";
+
+
+	system("pause");
+	system("cls");
+}
+
+void admin::datapattern() {          // function to print data pattern i.e. how data is stored on file
+
+	cout << "\n\n" << setfill(' ') << setw(67) << "Data Pattern\n";
+	cout << setfill('-') << setw(145) << " ";
+	cout << " \n    Student Name | Roll Number | Father Name | DOB | UNI | LCA | Differential | Communication Skills | Psychology | Programming | Percentage \n";
+	cout << setfill('-') << setw(145) << " " << "\n\n";
+
+}
+
+void admin::showdata() {            // function to print data in tabular form
+
+	system("cls");
+	cout << setfill('-') << setw(100) << "\n";
+	cout << "\n\t\tStudent Name:  " << stname << "\n\t\tRoll No:  " << roll;
+	cout << "\n\t\tFather's Name:  " << fname << "\n\t\tDate of Birth:  " << dob << "\n\t\t\University Name:  " << uni;
+	cout << "\n\n" << setfill('-') << setw(100) << "\n";
+	printtable(8, 9);
+	cout << "Subjects";
+	printtable(30, 9);
+	cout << "Marks Obtained";
+	printtable(60, 9);
+	cout << "Percentage";
+	cout << "\n" << setfill('-') << setw(100) << "\n";
+	printtable(8, 11); cout << "LCA";	printtable(36, 11); cout << LCA; printtable(63, 11); cout << ((LCA / 100.0) * 100) << "%";
+	printtable(8, 12); cout << "Differential Equations"; printtable(36, 12);  cout << Diff; printtable(63, 12); cout << ((Diff / 100.0) * 100) << "%";
+	printtable(8, 13); cout << "Communication Skills"; printtable(36, 13); cout << CM; printtable(63, 13); cout << ((CM / 100.0) * 100) << "%";
+	printtable(8, 14); cout << "Psychology"; printtable(36, 14); cout << PSYC; printtable(63, 14); cout << ((PSYC / 100.0) * 100) << "%";
+	printtable(8, 15); cout << "Programming"; printtable(36, 15);  cout << Prog; printtable(63, 15); cout << ((Prog / 100.0) * 100) << "%";
+	cout << "\n" << setfill('-') << setw(100) << "\n";
+	printtable(8, 17);
+	cout << "Total";
+	printtable(33, 17);
+	cout << (LCA + Diff + CM + PSYC + Prog) << "/500";
+	printtable(63, 17);
+	cout << percent;
+	cout << "\n" << setfill('-') << setw(100) << "\n";
+	cout << "\n\n\n\t\t";
+	Beep(600, 300);
+}
+
+void admin::readfile(int n) {        // funcntion to read file line by line and store it into variables 
+
+	fstream data("data.txt", ios::in | ios::out | ios::app);
+
+	for (int x = 0; x <= n; x++) {
+		data.getline(stname, 60, '|');   // command reads the data to | character and stores it in fname variable
+		data.getline(roll, 12, '|');
+		data.getline(fname, 60, '|');
+		data.getline(dob, 11, '|');
+		data.getline(uni, 150, '|');
+		(data >> LCA, '|');   // command reads the data to | character and stores it in int type variable LCA
+		data.ignore();
+		(data >> Diff, '|');
+		data.ignore();
+		(data >> CM, '|');
+		data.ignore();
+		(data >> PSYC, '|');
+		data.ignore();
+		(data >> Prog, '|');
+		data.ignore();
+		data.getline(percent, 7, '|');
+		data.ignore();
+	}
+
+	data.close();
+}
+
+void admin::printdata() {    // function to print all data 
+
+	while (ch != '3') {
+
+		fstream data("data.txt", ios::in);
+		system("cls");
+		Beep(600, 300);
+
+		cout << "\n\n\n\n\t\t\t\tSelect one option.....\n\n\t\t\t\t";
+		cout << "1: Print all data as stored on File\n\t\t\t\t2: Print all Report Cards individually\n\t\t\t\t";
+		cout << "3: Exit to previous menu\n\t\t\t\t";
+		cout << "\n\n\t\t\t\t\tEnter option: ";
+		cin.ignore();
+		cin >> ch;
+
+		switch (ch) {
+
+			case '1':
+				system("cls");
+				datapattern();
+				cout << "\n" << setfill('-') << setw(130) << "\n\t";
+				while (getline(data, x)) {    // loop reads file line by line and outputs data line by line
+					cout << x;
+					cout << "\n" << setfill('-') << setw(130) << "\n\t";   // used to format the data output
+				}
+				data.close();
+				cout << "\n\n\t\t\t";
+				Beep(600, 300);
+				system("pause");
+				break;
+
+			case '2':
+
+				i = 0; n = 0; j = 0;
+
+				while (getline(data, x)) {     // loop used to count no of lines with data
+					i++;
+				}
+				data.close();
+
+				while (j!=i) {        // loop runs till loop varibale j becomes equal to no of lines
+					system("cls");
+					readfile(n);    // function called
+					showdata();     // function called
+					system("pause");
+					n++;            //integer passed to readfile to get desired line for this loop
+					j++;
+				}
+
+				break;
+
+			case '3':
+				            //to break the loop
+				break;
+
+			default:
+
+				cout << "\n\t\t\t\tinvalid option!!!!!\n\n\t\t\t\t";
+				Beep(600, 300);
+				system("pause");
+		}
+
+		data.close();
+	}
+
+	system("cls");
+}
+
+void admin::search() {
+
+	char find[11];
+	system("cls");
+		
+	do{
+		z = 0; n = 0;
+		Beep(600, 300);
+
+		cout << "\n\n\n\n\t\tEnter Roll No of student you want to search: ";
+		cin.ignore();
+		cin.getline(find, 60);
+
+		fstream data("data.txt", ios::in);
+		while (getline(data, x)) {
+			readfile(n);
+			n++;
+			y = strcmp(find, roll);    //strcmp built in function used to compare to strings or char type data
+
+			if (y == 0) {                  //if works if both find and roll are same 
+				system("cls");
+				showdata();     
+				z++;                       // z increments 
+				system("pause");
+			}
+
+			data.ignore();
+		}
+		data.close();
+
+		if (z == 0) {                //if y is true z will increment and this will not run else this cond. will run
+			system("cls");
+			Beep(600, 300);
+			cout << "\n\n\t\t\tData not found against entered Roll Number!!!!\n\n\t\t\t\t";
+			system("pause");	
+		}
+
+		do {                       //do while used to ask user if he wants to search more data
+			system("cls");
+			Beep(600, 300);
+			cout << "\n\n\t\t\t\tDo you want to search another roll number? enter y/n....    ";
+			cin >> ch;
+			if (ch != 'n' && ch != 'y') {
+				Beep(600, 300);
+				cout << "\n\t\t\tinvalid input!!!\n\t\t\t";
+				system("pause");
+			}
+
+		} while (ch != 'n' && ch != 'y');
+
+	} while (ch != 'n' && ch == 'y');
+}
+
+void admin::tempfile() {           //function to store data on temporary file
+
+	fstream temp("temp.txt", ios::out | ios::app);
+
+	temp << stname << '|';
+	temp << roll << '|' << fname << '|' << dob << '|';
+	temp << uni << '|' << LCA << '|' << Diff << '|';
+	temp << CM << '|' << PSYC << '|' << Prog << '|' << (((LCA + Diff + CM + PSYC + Prog) / 500.0) * 100) << "%" << '|' << endl;
+
+	temp.close();
+}
+
+void admin::edittab() {         // funtion show sub options for edit option in admin tab
+
+	char op;
+	do {
+
+		Beep(600, 300);
+		system("cls");
+		cout << "\n\n\n\t\t\t\t1:   Edit data";
+		cout << "\n\t\t\t\t2:   Delete a student's data";
+		cout << "\n\t\t\t\t3:   Delete all data";
+		cout << "\n\t\t\t\t4:   Exit to previous menu";
+		cout << "\n\n\t\t\t\tEnter option:  ";
+		cin >> op;
+
+		switch (op) {
+
+			case '1':
+				editdata();        // fucntion call
+				break;
+
+			case '2':
+				deletestudentdata(); // function call
+				break;
+
+			case '3':
+				deletefile();       // function call
+				break;
+
+			case '4':
+				break;              // to break loop 
+
+			default:
+				cout << "\n\t\t\t\tinvalid option!!!!!\n\n\t\t\t\t";
+				Beep(600, 300);
+				system("pause");
+		}
+
+	} while (op != '4');        
+
+	system("cls");
+}
+
+void admin::editdata() {
+
+	do {
+		j = 0; i = 0; l = 0;          //counter initialized
+		char find[11];
+
+		fstream data("data.txt", ios::in | ios::out);
+		while (getline(data, x)) {    // loop to get number of lines on data file
+			i++;
+		}
+		data.close();
+
+		Beep(600, 300);
+		cout << "\n\n\n\n\t\tEnter Roll No of student who's data you want to Edit : ";
+		cin.ignore();
+		cin.getline(find, 11);
+
+		n = 0;                 // n initialized 
+		while (j != i) {       //loop runs till loop varibale j becomes equal to no of lines 
+			z = 0;
+			readfile(n);       //func call
+			n++;
+			y = strcmp(find, roll);    //two strings compared 
+
+			if (y == 0) {                        // if runs if both strings are same
+				system("cls");
+				showdata();
+				cout << "\n" << setfill('-') << setw(100) << "\n\n";
+				cout << "\t\t\tDo you want to Edit in this data? (y/n) ";
+				cin >> ch;                       // user asked if he wants to edit the found data
+
+				if (ch == 'y') {                 // if yess he is shown following options
+					do {
+						cout << "\n" << setfill('-') << setw(100) << "\n\n";
+						cout << "\t\t\t1: Edit Student Name ";
+						cout << "\n\t\t\t2: Edit Roll Number ";
+						cout << "\n\t\t\t3: Edit Father Name ";
+						cout << "\n\t\t\t4: Date Of Birth ";
+						cout << "\n\t\t\t5: Edit University Name ";
+						cout << "\n\t\t\t6: Edit LCA Marks ";
+						cout << "\n\t\t\t7: Edit Differential Marks ";
+						cout << "\n\t\t\t8: Edit Communication Skills Marks ";
+						cout << "\n\t\t\t9: Edit Psychology Marks ";
+						cout << "\n\t\t\t0: Edit Programing Marks ";
+						cout << "\n\n" << setfill('-') << setw(100) << "\n\n";
+						cout << "\t\t\tEnter option: ";
+						cin >> ch;              //choice from user taken
+						cout << "\n\n" << setfill('-') << setw(100) << "\n\n";
+
+						Beep(600, 300);
+						switch (ch) {           //switch used to get data from user
+							case '1':
+								cout << "\t\t\tEnter Student Name:\n\t\t\t\t";
+								cin.ignore();
+								cin.getline(stname, 60);
+								break;
+
+							case '2':
+								cout << "\t\t\tEnter Student's Roll no:\n\t\t\t\t";
+								cin.ignore();
+								cin.getline(roll, 12);
+
+								break;
+
+							case'3':
+								cout << "\t\t\tEnter Student's Father Name:\n\t\t\t\t";
+								cin.ignore();
+								cin.getline(fname, 60);
+								break;
+
+							case '4':
+								cout << "\t\t\tEnter Student Date of Birth (dd-mm-yyyy):\n\t\t\t\t";
+								cin.ignore();
+								cin.getline(dob, 11);
+								break;
+
+							case '5':
+								cout << "\t\t\tEnter UNI Name:\n\t\t\t\t";
+								cin.ignore();
+								cin.getline(uni, 150);
+								break;
+
+							case '6':
+								cout << "\t\tEnter obtained marks of student in LCA out of 100:  ";
+								cin >> LCA;
+								break;
+
+							case '7':
+								cout << "\n\t\tEnter obtained marks of student in Differential out of 100:  ";
+								cin >> Diff;
+								break;
+
+							case '8':
+								cout << "\n\t\tEnter obtained marks of student in Communication Skills out of 100:  ";
+								cin >> CM;
+								break;
+
+							case '9':
+								cout << "\n\t\tEnter obtained marks of student in Psychology out of 100:  ";
+								cin >> PSYC;
+								break;
+
+							case '0':
+								cout << "\n\t\tEnter obtained marks of student in Programming  out of 100:  ";
+								cin >> Prog;
+								break;
+
+							default:
+								cout << "\n\t\t\t\tinvalid option!!!!!\n\n\t\t\t\t";
+								Beep(600, 300);
+								system("pause");
+								break;
+						}
+
+						do {             //do while used to ask user if he wants to edit something else
+							Beep(600, 300);
+							cout << "\n\n\t\t\t\tDo you want to Edit something else? (y/n)    ";
+							cin >> ch;
+							if (ch != 'n' && ch != 'y') {
+								Beep(600, 300);
+								cout << "\n\t\t\tinvalid input!!!\n\t\t\t";
+								system("pause");
+							}
+							else if (ch == 'y') {
+								system("cls");
+								showdata();
+							}
+							else if (ch == 'n') l = 1;// l set equal to 1 to output data updated!!!
+
+						} while (ch != 'n' && ch != 'y');
+
+					} while (ch != 'n' && ch == 'y');
+					tempfile();   // if user doesnt want to edit more data all editied data is stored on temp file
+					cout << "\n" << setfill('-') << setw(100) << "\n\n";
+					z++;          // z incerment 
+				}
+				else if (ch == 'n') l = 2;  // to output data not edited
+			}
+			if (z == 0) {         // if y is not true this runs and stores all data on temp 
+				tempfile();
+			}
+
+			j++;
+		}
+
+		remove("data.txt");       //data file is deleted 
+		rename("temp.txt", "data.txt");      // temp file is rename to data
+
+		if (l == 1) {         // if data updated
+			Beep(600, 300);
+			cout << "\n\n\t\t\t\tData updated!!!!!!\n\n\t\t\t\t";
+			system("pause");
+		}
+		else if(l==2){
+			Beep(600, 300);
+			cout << "\n\n\t\t\t\tData not edited!!!!!!\n\n\t\t\t\t";
+			system("pause");
+		}
+		else if (j==i) {    // if loop runs completely and required data is not found this runs
+
+			Beep(600, 300);
+			cout << "\n\n\n\t\t\tData not found against roll number search!!!!!!\n\n\t\t\t";
+			system("pause");
+		}
+
+		do {                  //do while used to ask user if he wants to search another roll
+			system("cls");
+			Beep(600, 300);
+			cout << "\n\n\t\t\t\tDo you want to search another roll number? enter y/n....    ";
+			cin >> ch;
+			if (ch != 'n' && ch != 'y') {
+				Beep(600, 300);
+				cout << "\n\t\t\tinvalid input!!!\n\t\t\t";
+				system("pause");
+			}
+
+		} while (ch != 'n' && ch != 'y');
+
+	} while (ch != 'n' && ch == 'y');
+
+}
+
+void admin::deletestudentdata() {
+
+	do {
+		j = 0; i = 0; l = 0;               //loop counters initilized for this func
+		char find[11];
+
+		fstream data("data.txt", ios::in | ios::out);
+		while (getline(data, x)) {      //loop to get no of lines
+			i++;
+		}
+		data.close();
+
+		Beep(600, 300);
+		cout << "\n\n\n\n\t\tEnter Roll No of student who's data you want to delete : ";
+		cin.ignore();
+		cin.getline(find, 11);
+			
+		n = 0;
+		while (j!=i) {
+			z = 0;
+			readfile(n);    // func call
+			n++;
+			y = strcmp(find, roll);  // compares two roll no
+
+			if (y == 0) {                      // if both roll same 
+				system("cls");
+				showdata();                    // func call
+				cout << "\n\n\t\t\tDo you want to delete this data?(y/n) ";
+				cin >> ch;                     // user asked if he wants to delete this data
+
+				if (ch == 'y') {               //if yes 
+					z++;
+					l = 1;
+				}
+
+				else if (ch == 'n') {           //if no
+					tempfile();
+					z++; 
+					l = 2;
+				}
+			}
+			if (z== 0) {                        // runs if data not found
+				tempfile();
+			}
+
+			j++;
+		}
+
+		remove("data.txt");             // data file removed
+		rename("temp.txt", "data.txt");     //temp file renamed
+
+		if (l==1) {        // runs if data deleted
+			Beep(600, 300);
+			cout << "\n\n\t\t\t\tData deleted!!!!!!\n\n\t\t\t\t";
+			system("pause");		
+		}
+		else if (l == 2) {    // runs if data not deleted 
+			Beep(600, 300);
+			cout << "\n\n\t\t\t\tData was not deleted!!!!!!\n\n\t\t\t\t";
+			system("pause");
+		}
+		else if (j == i) {      // runs if data not found
+			Beep(600, 300);
+			cout << "\n\n\n\t\t\tData not found against roll number search!!!!!!\n\n\t\t\t";
+			system("pause");
+			system("cls");
+		}
+
+		do {
+			Beep(600, 300);
+			cout << "\n\n\t\t\t\tDo you want to search another roll number? enter y/n....    ";
+			cin >> ch;
+			if (ch != 'n' && ch != 'y') {
+				Beep(600, 300);
+				cout << "\n\t\t\tinvalid input!!!\n\t\t\t";
+				system("pause");
+			}
+
+		} while (ch != 'n' && ch != 'y');
+
+	} while (ch != 'n' && ch == 'y');
+}
+
+void admin::deletefile() {     // function to delete all data
+
+	system("cls");
+	datapattern();         // function call
+	cout << "\n" << setfill('-') << setw(130) << "\n\t";
+	fstream data("data.txt", ios::in);
+	while (getline(data, x)) {     // loop to print all data line by line
+		cout << x;
+		cout << "\n" << setfill('-') << setw(130) << "\n\t";
+	}
+	data.close();
+
+	Beep(600, 300);
+	cout << "\n\n\t\t\t\tDo you want to delete this data? (y/n)....    ";
+	cin >> ch;            // user asked if he wants to delete this data or not
+
+	if (ch != 'n' && ch == 'y') {         //if yes 
+		Beep(600, 300);
+		cout << "\n\n\n\t\t\t\t\tAll Data Deleted\n\n\t\t\t\t";
+		remove("data.txt");
+		system("pause");
+	}
+
+	else if (ch == 'n' && ch != 'y') {     //if no
+
+		Beep(600, 300);
+		cout << "\n\n\n\t\t\t\t\tData was not deleted.\n\n\t\t\t\t";
+		system("pause");
+	}
+}
+
+
